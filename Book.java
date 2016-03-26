@@ -27,7 +27,11 @@ import java.io.*;
  * @author Brahma Dathan and Sarnath Ramnath
  *
  */
+<<<<<<< HEAD
 public class Book implements Serializable {
+=======
+public class Book implements Serializable, NormalBook {
+>>>>>>> 5f34fc4... Initial files
   private static final long serialVersionUID = 1L;
   private String title;
   private String author;
