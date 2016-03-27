@@ -98,8 +98,6 @@ public abstract class Book {
 
 	public abstract boolean issue(Member member);
 
-	public abstract Member returnBook();
-
 	public abstract boolean renew(Member member);
 
 	public abstract boolean checkFines(Member member);

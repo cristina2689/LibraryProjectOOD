@@ -5,21 +5,10 @@ public class NewBookDecorator extends Book {
 	public NewBookDecorator(Book decoratedBook) {
 		this.decoratedBook = decoratedBook;
 	}
-	@Override
-	public boolean issue(Member member) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
-	@Override
-	public Member returnBook() {
-		// TODO Fines are bigger for new books
-		return null;
-	}
-
+	// New books cannot be renewed
 	@Override
 	public boolean renew(Member member) {
-		// TODO Cannot be renewed
 		return false;
 	}
 	@Override
@@ -36,5 +25,10 @@ public class NewBookDecorator extends Book {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public boolean issue(Member member) {
+		return decoratedBook.issue(member);
 	}
 }

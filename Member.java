@@ -215,10 +215,11 @@ public class Member implements Serializable {
       string += iterator.next();
     }
     string += "]";
+    string = string + " fine: " + fine;
     return string;
   }
 
-	public int getFine() {
+	public long getFine() {
 		return fine;
 	}
 

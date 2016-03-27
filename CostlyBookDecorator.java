@@ -6,26 +6,24 @@ public class CostlyBookDecorator extends Book {
 	public CostlyBookDecorator(Book decoratedBook) {
 		this.decoratedBook = decoratedBook;
 	}
+
+	//A costly book cannot be issued to a member who has unpaid fines.
 	@Override
 	public boolean issue(Member member) {
-		// TODO Cannot be issued to members that have unpaid fines
+		if (member.getFine() > 0)
 		return false;
+		return decoratedBook.issue(member);
 	}
 
-	@Override
-	public Member returnBook() {
-		// TODO Check fines
-		return null;
-	}
-
+	//A costly book cannot be renewed (<=> from issue) if unpaid fines.
 	@Override
 	public boolean renew(Member member) {
-		// TODO Cannot be renewed to members that have unpaid fines
-		return false;
+		if (member.getFine() > 0)
+			return false;
+		return decoratedBook.issue(member);
 	}
 	@Override
 	public boolean checkFines(Member member) {
-		// TODO Auto-generated method stub
-		return false;
+		return decoratedBook.checkFines(member);
 	}
 }
