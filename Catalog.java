@@ -55,9 +55,9 @@ public class Catalog implements Serializable {
    * @return true iff the book exists
    * 
    */
-  public Book search(String bookId) {
+  public OlderBook search(String bookId) {
     for (Iterator iterator = books.iterator(); iterator.hasNext(); ) {
-      Book book = (Book) iterator.next();
+      OlderBook book = (OlderBook) iterator.next();
       if (book.getId().equals(bookId)) {
         return book;
       }
@@ -70,7 +70,7 @@ public class Catalog implements Serializable {
    * @return true iff book could be removed
    */
   public boolean removeBook(String bookId) {
-    Book book = search(bookId);
+    OlderBook book = search(bookId);
     if (book == null) {
       return false;
     } else {
@@ -82,7 +82,7 @@ public class Catalog implements Serializable {
    * @param book the book to be inserted
    * @return true iff the book could be inserted. Currently always true
    */
-  public boolean insertBook(Book book) {
+  public boolean insertBook(OlderBook book) {
     books.add(book);
     return true;
   }

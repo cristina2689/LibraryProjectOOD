@@ -1,8 +1,8 @@
 
-public class NewBookDecorator implements NormalBook {
-	protected NormalBook decoratedBook;
+public class NewBookDecorator extends Book {
+	protected Book decoratedBook;
 	
-	public NewBookDecorator(NormalBook decoratedBook) {
+	public NewBookDecorator(Book decoratedBook) {
 		this.decoratedBook = decoratedBook;
 	}
 	@Override
@@ -22,5 +22,19 @@ public class NewBookDecorator implements NormalBook {
 		// TODO Cannot be renewed
 		return false;
 	}
-
+	@Override
+	public boolean checkFines(Member member) {
+		long dueDays = decoratedBook.getExtraDays();
+		// decoratedBook.checkFines() and then add the diff - more Decorator like
+		
+		if (dueDays == 1) {
+			member.addAmountToFine(25 * decoratedBook.getRaiseAmount());
+			return true;
+		}
+		if (dueDays > 1){
+			member.addAmountToFine(10 * decoratedBook.getRaiseAmount());
+			return true;
+		}
+		return false;
+	}
 }

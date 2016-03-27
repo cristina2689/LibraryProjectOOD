@@ -1,9 +1,9 @@
 
-public class CostlyBookDecorator implements NormalBook {
+public class CostlyBookDecorator extends Book {
 
-	protected NormalBook decoratedBook;
+	protected Book decoratedBook;
 
-	public CostlyBookDecorator(NormalBook decoratedBook) {
+	public CostlyBookDecorator(Book decoratedBook) {
 		this.decoratedBook = decoratedBook;
 	}
 	@Override
@@ -20,7 +20,12 @@ public class CostlyBookDecorator implements NormalBook {
 
 	@Override
 	public boolean renew(Member member) {
-		// TODO Cannot berenew to members that have unpaid fines
+		// TODO Cannot be renewed to members that have unpaid fines
+		return false;
+	}
+	@Override
+	public boolean checkFines(Member member) {
+		// TODO Auto-generated method stub
 		return false;
 	}
 }

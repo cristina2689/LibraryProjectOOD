@@ -63,8 +63,8 @@ public class Library implements Serializable {
    * @param id book id
    * @return the Book object created
    */
-  public Book addBook(String title, String author, String id) {
-    Book book = new Book(title, author, id);
+  public OlderBook addBook(String title, String author, String id) {
+    OlderBook book = new OlderBook(title, author, id);
     if (catalog.insertBook(book)) {
       return (book);
     }
@@ -92,7 +92,7 @@ public class Library implements Serializable {
    * @return indication on the outcome
    */
   public int placeHold(String memberId, String bookId, int duration) {
-    Book book = catalog.search(bookId);
+    OlderBook book = catalog.search(bookId);
     if (book == null) {
       return(BOOK_NOT_FOUND);
     }
@@ -122,7 +122,7 @@ public class Library implements Serializable {
    * @return the member who should be notified
    */
   public Member processHold(String bookId) {
-    Book book = catalog.search(bookId);
+    OlderBook book = catalog.search(bookId);
     if (book == null) {
       return (null);
     }
@@ -145,7 +145,7 @@ public class Library implements Serializable {
     if (member == null) {
       return (NO_SUCH_MEMBER);
     }
-    Book book = catalog.search(bookId);
+    OlderBook book = catalog.search(bookId);
     if (book == null) {
       return(BOOK_NOT_FOUND);
     }
@@ -156,7 +156,7 @@ public class Library implements Serializable {
    */
   private void removeInvalidHolds() {
     for (Iterator catalogIterator = catalog.getBooks(); catalogIterator.hasNext(); ) {
-      for (Iterator iterator = ((Book) catalogIterator.next()).getHolds(); iterator.hasNext(); ) {
+      for (Iterator iterator = ((OlderBook) catalogIterator.next()).getHolds(); iterator.hasNext(); ) {
         Hold hold = (Hold) iterator.next();
         if (!hold.isValid()) {
           hold.getBook().removeHold(hold.getMember().getId());
@@ -171,8 +171,8 @@ public class Library implements Serializable {
    * @param bookId book id
    * @return the book issued
    */
-  public Book issueBook(String memberId, String bookId) {
-    Book book = catalog.search(bookId);
+  public OlderBook issueBook(String memberId, String bookId) {
+    OlderBook book = catalog.search(bookId);
     if (book == null) {
       return(null);
     }
@@ -194,8 +194,8 @@ public class Library implements Serializable {
    * @param memberId member id
    * @return the book renewed
    */
-  public Book renewBook(String bookId, String memberId) {
-    Book book = catalog.search(bookId);
+  public OlderBook renewBook(String bookId, String memberId) {
+    OlderBook book = catalog.search(bookId);
     if (book == null) {
       return(null);
     }
@@ -227,7 +227,7 @@ public class Library implements Serializable {
    * @return a code representing the outcome
    */
   public int removeBook(String bookId) {
-    Book book = catalog.search(bookId);
+    OlderBook book = catalog.search(bookId);
     if (book == null) {
       return(BOOK_NOT_FOUND);
     }
@@ -248,7 +248,7 @@ public class Library implements Serializable {
    * @return a code representing the outcome
    */
   public int returnBook(String bookId) {
-    Book book = catalog.search(bookId);
+    OlderBook book = catalog.search(bookId);
     if (book == null) {
       return(BOOK_NOT_FOUND);
     }

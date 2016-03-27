@@ -27,7 +27,7 @@ import java.io.*;
  *
  */
 public class Hold implements Serializable {
-  private Book book;
+  private OlderBook book;
   private Member member;
   private Calendar date;
   /**
@@ -37,7 +37,7 @@ public class Hold implements Serializable {
    * @param book the book on which hold is placed
    * @param duration for how long the hold is valid
    */
-  public Hold(Member member, Book book, int duration) {
+  public Hold(Member member, OlderBook book, int duration) {
     this.book = book;
     this.member = member;
     date = new GregorianCalendar();
@@ -55,7 +55,7 @@ public class Hold implements Serializable {
    * Getter for Book
    * @return Book being held
    */
-  public Book getBook() {
+  public OlderBook getBook() {
     return book;
   }
   /**

@@ -19,14 +19,20 @@
  * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  
  */
-import java.util.*;
-import java.io.*;
+import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
 public class Member implements Serializable {
   private static final long serialVersionUID = 1L;
   private String name;
   private String address;
   private String phone;
   private String id;
+  private long fine = 0;
+  
   private static final String MEMBER_STRING = "M";
   private List booksBorrowed = new LinkedList();
   private List booksOnHold = new LinkedList();
@@ -48,7 +54,7 @@ public class Member implements Serializable {
    * @param book the book to be issued
    * @return true iff the book could be marked as issued. always true currently 
    */
-  public boolean issue(Book book) {
+  public boolean issue(OlderBook book) {
     if (booksBorrowed.add(book)) {
       transactions.add(new Transaction ("Book issued ", book.getTitle()));
       return true;
@@ -60,7 +66,7 @@ public class Member implements Serializable {
    * @param book the book to be returned
    * @return true iff the book could be marked as marked as returned 
    */
-  public boolean returnBook(Book book) {
+  public boolean returnBook(OlderBook book) {
     if ( booksBorrowed.remove(book)){
       transactions.add(new Transaction ("Book returned ", book.getTitle()));
       return true;
@@ -68,13 +74,13 @@ public class Member implements Serializable {
     return false;
   }
   /**
-   * Marks the book as renewe
+   * Marks the book as renew
    * @param book the book to be renewed
    * @return true iff the book could be renewed
    */
-  public boolean renew(Book book) {
+  public boolean renew(OlderBook book) {
     for (ListIterator iterator = booksBorrowed.listIterator(); iterator.hasNext(); ) {
-      Book aBook = (Book) iterator.next();
+      OlderBook aBook = (OlderBook) iterator.next();
       String id = aBook.getId();
       if (id.equals(book.getId())) {
         transactions.add(new Transaction ("Book renewed ",  book.getTitle()));
@@ -196,7 +202,7 @@ public class Member implements Serializable {
     String string = "Member name " + name + " address " + address + " id " + id + "phone " + phone;
     string += " borrowed: [";
     for (Iterator iterator = booksBorrowed.iterator(); iterator.hasNext(); ) {
-      Book book = (Book) iterator.next();
+      OlderBook book = (OlderBook) iterator.next();
       string += " " + book.getTitle();
     }
     string += "] holds: [";
@@ -206,9 +212,21 @@ public class Member implements Serializable {
     }
     string += "] transactions: [";
     for (Iterator iterator = transactions.iterator(); iterator.hasNext(); ) {
-      string += (Transaction) iterator.next();
+      string += iterator.next();
     }
     string += "]";
     return string;
   }
+
+	public int getFine() {
+		return fine;
+	}
+
+	public void setFine(int fine) {
+		this.fine = fine;
+	}
+
+	public void addAmountToFine(long amount) {
+		this.fine += amount;
+	}
 }

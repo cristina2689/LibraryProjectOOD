@@ -205,7 +205,7 @@ public class UserInterface {
    *  
    */
   public void addBooks() {
-    Book result;
+    OlderBook result;
     do {
       String title = getToken("Enter  title");
       String bookID = getToken("Enter id");
@@ -228,7 +228,7 @@ public class UserInterface {
    *  
    */
   public void issueBooks() {
-    Book result;
+    OlderBook result;
     String memberID = getToken("Enter member id");
     if (library.searchMembership(memberID) == null) {
       System.out.println("No such member");
@@ -254,7 +254,7 @@ public class UserInterface {
    *  
    */
   public void renewBooks() {
-    Book result;
+    OlderBook result;
     String memberID = getToken("Enter member id");
     if (library.searchMembership(memberID) == null) {
       System.out.println("No such member");
@@ -262,7 +262,7 @@ public class UserInterface {
     }
     Iterator issuedBooks = library.getBooks(memberID);
     while (issuedBooks.hasNext()){
-      Book book = (Book)(issuedBooks.next());
+      OlderBook book = (OlderBook)(issuedBooks.next());
       if (yesOrNo(book.getTitle())) {
         result = library.renewBook(book.getId(), memberID);
         if (result != null){
