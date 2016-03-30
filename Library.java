@@ -19,8 +19,14 @@
  * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  
  */
-import java.util.*;
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Iterator;
 public class Library implements Serializable {
   private static final long serialVersionUID = 1L;
   public static final int BOOK_NOT_FOUND  = 1;
@@ -35,6 +41,7 @@ public class Library implements Serializable {
   private Catalog catalog;
   private MemberList memberList;
   private static Library library;
+  private ItemFactory factory;
   /**
    * Private for the singleton pattern
    * Creates the catalog and member collection objects
@@ -42,6 +49,7 @@ public class Library implements Serializable {
   private Library() {
     catalog = Catalog.instance();
     memberList = MemberList.instance();
+    factory = new ItemFactory();
   }
   /**
    * Supports the singleton pattern
@@ -56,6 +64,12 @@ public class Library implements Serializable {
       return library;
     }
   }
+  public LoanableItem addItem (LoanableItem item) {
+	  if (catalog.insertItem(item)) {
+		  return item;
+	  }
+	  return null;
+  }
   /**
    * Organizes the operations for adding a book
    * @param title book title
@@ -63,12 +77,10 @@ public class Library implements Serializable {
    * @param id book id
    * @return the Book object created
    */
-  public Book addBook(String title, String author, String id) {
-    Book book = new Book(title, author, id);
-    if (catalog.insertBook(book)) {
-      return (book);
-    }
-    return null;
+  public LoanableItem addItem(String type, String title, String author, String id, Integer duration) {
+	LoanableItem item = factory.buildItem("book", title, author, id, duration);
+	addItem(item);
+	return  item;
   }
   /**
   * Organizes the operations for adding a member
@@ -92,7 +104,7 @@ public class Library implements Serializable {
    * @return indication on the outcome
    */
   public int placeHold(String memberId, String bookId, int duration) {
-    Book book = catalog.search(bookId);
+    Book book = (Book) catalog.search(bookId);
     if (book == null) {
       return(BOOK_NOT_FOUND);
     }
@@ -122,7 +134,7 @@ public class Library implements Serializable {
    * @return the member who should be notified
    */
   public Member processHold(String bookId) {
-    Book book = catalog.search(bookId);
+    Book book = (Book) catalog.search(bookId);
     if (book == null) {
       return (null);
     }
@@ -145,7 +157,7 @@ public class Library implements Serializable {
     if (member == null) {
       return (NO_SUCH_MEMBER);
     }
-    Book book = catalog.search(bookId);
+    Book book = (Book) catalog.search(bookId);
     if (book == null) {
       return(BOOK_NOT_FOUND);
     }
@@ -155,7 +167,7 @@ public class Library implements Serializable {
    * Removes all out-of-date holds
    */
   private void removeInvalidHolds() {
-    for (Iterator catalogIterator = catalog.getBooks(); catalogIterator.hasNext(); ) {
+    for (Iterator catalogIterator = catalog.getItems(); catalogIterator.hasNext(); ) {
       for (Iterator iterator = ((Book) catalogIterator.next()).getHolds(); iterator.hasNext(); ) {
         Hold hold = (Hold) iterator.next();
         if (!hold.isValid()) {
@@ -172,7 +184,7 @@ public class Library implements Serializable {
    * @return the book issued
    */
   public Book issueBook(String memberId, String bookId) {
-    Book book = catalog.search(bookId);
+    Book book = (Book) catalog.search(bookId);
     if (book == null) {
       return(null);
     }
@@ -195,7 +207,7 @@ public class Library implements Serializable {
    * @return the book renewed
    */
   public Book renewBook(String bookId, String memberId) {
-    Book book = catalog.search(bookId);
+    Book book = (Book) catalog.search(bookId);
     if (book == null) {
       return(null);
     }
@@ -227,7 +239,7 @@ public class Library implements Serializable {
    * @return a code representing the outcome
    */
   public int removeBook(String bookId) {
-    Book book = catalog.search(bookId);
+    Book book = (Book) catalog.search(bookId);
     if (book == null) {
       return(BOOK_NOT_FOUND);
     }
@@ -237,7 +249,7 @@ public class Library implements Serializable {
     if ( book.getBorrower() != null) {
       return(BOOK_ISSUED);
     }
-    if (catalog.removeBook(bookId)) {
+    if (catalog.removeItem(bookId)) {
       return (OPERATION_COMPLETED);
     }
     return (OPERATION_FAILED);
@@ -248,11 +260,11 @@ public class Library implements Serializable {
    * @return a code representing the outcome
    */
   public int returnBook(String bookId) {
-    Book book = catalog.search(bookId);
+    Book book = (Book) catalog.search(bookId);
     if (book == null) {
       return(BOOK_NOT_FOUND);
     }
-    Member member = book.returnBook();
+    Member member = book.returnItem();
     if (member == null) {
       return(BOOK_NOT_ISSUED);
     }

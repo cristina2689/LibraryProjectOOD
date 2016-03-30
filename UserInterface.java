@@ -19,9 +19,15 @@
  * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  
  */
-import java.util.*;
-import java.text.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.StringTokenizer;
 /**
  * 
  * This class implements the user interface for the Library project.
@@ -47,7 +53,11 @@ public class UserInterface {
   private static final int GET_TRANSACTIONS = 10;
   private static final int SAVE = 11;
   private static final int RETRIEVE = 12;
-  private static final int HELP = 13;
+  private static final int HELP = 16;
+  private static final int ADD_CDS = 13;
+  private static final int ADD_DVDS = 14;
+  private static final int ADD_LAPTOPS = 15;
+  
   /**
    * Made private for singleton pattern.
    * Conditionally looks for any saved data. Otherwise, it gets
@@ -165,10 +175,13 @@ public class UserInterface {
    * 
    */
   public void help() {
-    System.out.println("Enter a number between 0 and 12 as explained below:");
+    System.out.println("Enter a number between 0 and 16 as explained below:");
     System.out.println(EXIT + " to Exit\n");
     System.out.println(ADD_MEMBER + " to add a member");
     System.out.println(ADD_BOOKS + " to  add books");
+    System.out.println(ADD_CDS + " to  add CDS");
+    System.out.println(ADD_DVDS + " to  add DVD");
+    System.out.println(ADD_LAPTOPS + " to  add laptops");
     System.out.println(ISSUE_BOOKS + " to  issue books to a  member");
     System.out.println(RETURN_BOOKS + " to  return books ");
     System.out.println(RENEW_BOOKS + " to  renew books ");
@@ -204,17 +217,18 @@ public class UserInterface {
    * uses the appropriate Library method for adding the book.
    *  
    */
-  public void addBooks() {
-    Book result;
+  public void addItems(String type) {
+    LoanableItem result;
     do {
       String title = getToken("Enter  title");
-      String bookID = getToken("Enter id");
+      String itemID = getToken("Enter id");
       String author = getToken("Enter author");
-      result = library.addBook(title, author, bookID);
+      Integer duration = Integer.parseInt(getToken("Enter duration"));
+      result = library.addItem(type, title, author, itemID, duration);
       if (result != null) {
         System.out.println(result);
       } else {
-        System.out.println("Book could not be added");
+        System.out.println("Item could not be added");
       }
       if (!yesOrNo("Add more books?")) {
         break;
@@ -480,8 +494,15 @@ public class UserInterface {
       switch (command) {
         case ADD_MEMBER:        addMember();
                                 break;
-        case ADD_BOOKS:         addBooks();
+         /* Book, CDs, DVDs, Laptops could be merged if user inserts string */
+        case ADD_BOOKS:         addItems("book");
                                 break;
+        case ADD_CDS:			addItems("CD");
+        						break;
+        case ADD_DVDS:			addItems("DVD");
+        						break;
+        case ADD_LAPTOPS:		addItems("laptop");
+        						break;
         case ISSUE_BOOKS:       issueBooks();
                                 break;
         case RETURN_BOOKS:      returnBooks();

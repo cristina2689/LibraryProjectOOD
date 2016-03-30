@@ -19,17 +19,19 @@
  * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  
  */ 
-import java.util.*;
-import java.lang.*;
-import java.io.*;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 /**
- * The collection class for Book objects
+ * The collection class for item objects
  * @author Brahma Dathan and Sarnath Ramnath
  *
  */
 public class Catalog implements Serializable {
   private static final long serialVersionUID = 1L;
-  private List books = new LinkedList();
+  private List items = new LinkedList();
   private static Catalog catalog;
   /*
    * Private constructor for singleton pattern
@@ -45,53 +47,51 @@ public class Catalog implements Serializable {
   public static Catalog instance() {
     if (catalog == null) {
       return (catalog = new Catalog());
-    } else {
-      return catalog;
     }
+    return catalog;
   }
   /**
-   * Checks whether a book with a given book id exists.
-   * @param bookId the id of the book
-   * @return true iff the book exists
+   * Checks whether a item with a given item id exists.
+   * @param itemId the id of the item
+   * @return true iff the item exists
    * 
    */
-  public Book search(String bookId) {
-    for (Iterator iterator = books.iterator(); iterator.hasNext(); ) {
-      Book book = (Book) iterator.next();
-      if (book.getId().equals(bookId)) {
-        return book;
+  public LoanableItem search(String itemId) {
+    for (Iterator iterator = items.iterator(); iterator.hasNext(); ) {
+      LoanableItem item = (LoanableItem) iterator.next();
+      if (item.getId().equals(itemId)) {
+        return item;
       }
     }
     return null;
   }
   /**
-   * Removes a book from the catalog
-   * @param bookId book id
-   * @return true iff book could be removed
+   * Removes an item from the catalog
+   * @param itemID
+   * @return true iff item could be removed
    */
-  public boolean removeBook(String bookId) {
-    Book book = search(bookId);
-    if (book == null) {
+  public boolean removeItem(String itemId) {
+    LoanableItem item = search(itemId);
+    if (item == null) {
       return false;
-    } else {
-      return books.remove(book);
     }
+    return items.remove(item);
   }
   /**
-   * Inserts a book into the collection
-   * @param book the book to be inserted
-   * @return true iff the book could be inserted. Currently always true
+   * Inserts a item into the collection
+   * @param item the item to be inserted
+   * @return true iff the item could be inserted. Currently always true
    */
-  public boolean insertBook(Book book) {
-    books.add(book);
+  public boolean insertItem(LoanableItem item) {
+    items.add(item);
     return true;
   }
   /**
-   * Returns an iterator to all books
+   * Returns an iterator to all items
    * @return iterator to the collection
    */
-  public Iterator getBooks() {
-    return books.iterator();
+  public Iterator getItems() {
+    return items.iterator();
   }
   /*
    * Supports serialization
@@ -130,7 +130,8 @@ public class Catalog implements Serializable {
   /** String form of the collection
   * 
   */
-  public String toString() {
-    return books.toString();
+  @Override
+public String toString() {
+    return items.toString();
   }
 }
